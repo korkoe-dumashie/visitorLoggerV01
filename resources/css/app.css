@@ -1,0 +1,32 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap');
+@import url('datatables.net-dt');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+*{
+    font-family: Urbanist, sans-serif;
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+}
+
+@font-face {
+    font-family: Urbanist, sans-serif;
+    src: url("./Urbanist/static/Urbanist-Black.ttf");
+}
+
+
+
+
+.scrollbar-hidden::-webkit-scrollbar{
+    display: none;
+}
+
+
+.scrollbar-hidden{
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
