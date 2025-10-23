@@ -26,15 +26,15 @@ Route::middleware('guest')->group(function () {
         Route::get('/reset-password/{token}', [AssignUserController::class, 'showResetForm'])
             ->name('password.reset'); // Changed to standard name
 
-        
+
         Route::get('/newUser/{username}',[AssignUserController::class, 'newUser'])->name('newUser');
 
         Route::post('/newUser', [AssignUserController::class, 'newUserStore'])
             ->name('newUser.store'); // Changed to standard name
-        
+
         Route::post('/reset-password', [AssignUserController::class, 'resetPassword'])
             ->name('password.update'); // Changed to standard name
-        
+
         // Your existing auth routes
         Route::view('login', 'auth.login')->name('login');
         Route::post('login', [UserAuthController::class, 'login']);
@@ -44,24 +44,24 @@ Route::middleware('auth')->group(function(){
 
 
 
-        
+
 Route::get('/', function () {
 
-        
+
         $devices = Device::where('status', 'takeHome')
         ->orWhere('status', 'deviceLoggedIn')
         ->orWhere('created_at', Carbon::today())
         ->with('employee')
         ->simplePaginate(10);
-        
-        
-        
+
+
+
         $keys = KeyEvent::where('status', 'picked')
         ->with(['key', 'employee'])
         ->simplePaginate(10);
 
         $all_visits = Visitor::where('status', 'ongoing')->get();
-        
+
         Log::debug( count($all_visits));
         return view('index',[
                 'visitor' => Visitor::where('status', 'ongoing')
@@ -71,13 +71,13 @@ Route::get('/', function () {
 
         'keys' => KeyEvent::with('employee')->where('status', 'picked')->simplePaginate(10),
         'all_keys' => Visitor::where('created_at', Carbon::today())->get(),
-        
+
         ],compact('devices','keys','all_visits'));
 
 
 })->name('/');
 
-        
+
 
                 Route::post('logout', [UserAuthController::class, 'logout']);
 
@@ -96,6 +96,11 @@ Route::get('/', function () {
 
                         Route::get('edit-staff/{employee}','edit')->middleware('module.permission:staff,modify');
                         Route::patch('update/{employee}','update')->middleware('module.permission:staff,modify');
+
+                        Route::get('export-staff','exportEmployees')->name('staff.export');
+                        Route::get('export-template','exportTemplate')->name('staff.export.template');
+                        Route::get('import-staff','showImport')->name('staff.import');
+                        Route::post('import-staff','importEmployees')->name('staff.import.post');
                 });
 
 
@@ -106,28 +111,28 @@ Route::get('/', function () {
                 Route::controller(VisitorController::class)->group(function(){
 
                         Route::get('visits', 'index');
-                        
+
                         Route::get('/departure/{visitor}',  'departure')->name('visitor.departure');
-                        
+
                         Route::get('create-visit',  'create')->name('create-visit');
 
                         Route::get('visitor/{visitor}', 'display')->name('display');
-                        
+
                         Route::get('old-visitor/{visitor}',  'oldVisitorSignIn')->name('old-visitor');
-                        
+
                         Route::get('check-visitor',  'checkVisitor')->name('check-visitor');
 
                         Route::get('check-exit', 'checkExit');
 
                         Route::post('confirmExit', 'confirmExit')->name('confirmExit');
-                        
-                        
+
+
                         Route::get('visit/{visitor}',  'show')->name('showVisitor');
 
                         Route::post('verify-otp', 'verifyOtp')->name('verify-otp');
 
                         Route::post('find-visitor','oldVisitor')->name('find-visitor');
-                        
+
                         Route::post('visit', 'store');
 
 
@@ -157,7 +162,7 @@ Route::get('/', function () {
                 })->middleware('module.permission:keys,view');
 
                 Route::controller(KeyController::class)->group(function(){
-                
+
                         Route::get('all_keys', [KeyController::class, 'keys']);
 
 
@@ -165,9 +170,9 @@ Route::get('/', function () {
 
                         Route::post('store-key', [KeyController::class, 'store']);
 
-                        
+
                         Route::patch('/activate-key/{id}', [KeyController::class, 'activate']);
-                        
+
                         Route::patch('/deactivate-key/{id}', [KeyController::class, 'deactivate']);
 
                 })->middleware('module.permission:keys,view,create,modify,delete');
@@ -236,7 +241,7 @@ Route::get('/', function () {
                 });
 
 
-                
+
                 //user assignment
 
 
@@ -275,3 +280,15 @@ Route::get('/', function () {
                 Route::view('settings', 'settings.index')
                 ->middleware('module.permission:settings,view,create,modify,delete');
 
+Route::get('/test-error/{code}', function ($code) {
+    abort($code);
+})->where('code', '[0-9]+');
+
+// Test specific errors
+Route::get('/test-404', function () {
+    abort(404);
+});
+
+Route::get('/test-500', function () {
+    throw new Exception('Test server error');
+});

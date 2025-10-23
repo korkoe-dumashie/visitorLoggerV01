@@ -16,6 +16,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{DB,Hash,Auth,Log,Mail,Password};
 use Illuminate\Support\Str;
 
+use function Laravel\Prompts\select;
+
 class AssignUserController extends Controller
 {
     
@@ -31,10 +33,23 @@ class AssignUserController extends Controller
 
     //add a new user
     public function create(){
-        $employees = Employee::whereNotIn('email', function ($query) {
-            $query->select('email')->from('users');
-        })->get();
 
+        // $currentUserEmails = User::pluck('email','id' );
+        // $employees = Employee::whereNotIn('email', function ($query) {
+        //     $query->select('email')->from('users');
+        // })->get();
+
+    $userEmails = User::pluck('email')->toArray();
+    // dd($userEmails);
+
+    // $employees = Employee::get();
+    
+    // Get employees whose emails are not in the users table
+    $employees = Employee::whereNone('email', $userEmails)->get();
+
+    // dd($employees);
+        // dd($employees);
+        // Log::debug($employees);
         $roles = Roles::get();
 
 
@@ -71,7 +86,7 @@ class AssignUserController extends Controller
         $user->update([
             'password'=>Hash::make(request()->password),
         ]);
-
+ 
 
         return redirect('/')->with('success','Password updated successfully');
     }

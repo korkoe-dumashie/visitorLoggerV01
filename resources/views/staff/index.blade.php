@@ -6,11 +6,25 @@
 
     @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'staff', 'create'))
 
+<div class="flex justify-self-end gap-4 p-10">
+    @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'staff', 'create'))
+    <a href="{{url('create-staff')}}" class="bg-gradient-to-b px-10 text-xl flex items-center rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4]">
+        New Staff
+    </a>
 
-    <div class="flex justify-self-end p-10 ">
-        <a href="{{url('create-staff')}}" class="bg-gradient-to-b px-10 text-xl flex items-center rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4]">
-          New Staff</a>
-    </div>
+    <a href="{{route('staff.export')}}" class="bg-gradient-to-b px-10 text-xl flex items-center rounded-lg py-2 text-white from-green-600 to-green-700">
+        Export
+    </a>
+
+    <a href="{{route('staff.import')}}" class="bg-gradient-to-b px-10 text-xl flex items-center rounded-lg py-2 text-white from-purple-600 to-purple-700">
+        Import
+    </a>
+
+    <a href="{{route('staff.export.template')}}" class="bg-gradient-to-b px-10 text-xl flex items-center rounded-lg py-2 text-white from-gray-600 to-gray-700">
+        Download Template
+    </a>
+</div>
+@endif
   @endif
     <div class=" overflow-x-auto sm:rounded-lg p-10">
         <table class="w-full text-left text-gray-500" id="staff">
@@ -38,17 +52,17 @@
                         <th scope="row" class="px-6 py-4 font-semibold text-gray-900 whitespace-nowrap">
                             {{ $staff?->first_name }} {{ $staff?->last_name }}
                         </th>
-            
+
                         <!-- Department -->
                         <td class="px-6 py-4 text-black uppercase">
                             {{ $staff->department->name ?? 'N/A' }} <!-- Handle null department -->
                         </td>
-            
+
                         <!-- Job Title -->
                         <td class="px-6 text-black py-4">
                             {{ $staff->job_title }}
                         </td>
-            
+
                         <!-- View Link -->
                         <td class="px-6 flex gap-20 items-center py-4">
                             <a

@@ -3,6 +3,7 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -35,6 +36,31 @@ class Handler extends ExceptionHandler
         'password',
         'password_confirmation',
     ];
+
+    public function render($request, Throwable $exception)
+    {
+        // Handle specific exceptions for Blade apps
+        if ($exception instanceof \Illuminate\Database\Eloquent\ModelNotFoundException) {
+            return response()->view('errors.404', [], 404);
+        }
+
+        if ($exception instanceof \Illuminate\Auth\AuthenticationException) {
+            return redirect()->guest(route('login'));
+        }
+
+        // Handle HTTP exceptions
+        if ($exception instanceof HttpException) {
+            $statusCode = $exception->getStatusCode();
+
+            if (view()->exists("errors.{$statusCode}")) {
+                return response()->view("errors.{$statusCode}", [
+                    'exception' => $exception
+                ], $statusCode);
+            }
+        }
+
+        return parent::render($request, $exception);
+    }
 
     /**
      * Register the exception handling callbacks for the application.
