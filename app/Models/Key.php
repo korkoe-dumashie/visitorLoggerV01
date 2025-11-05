@@ -3,16 +3,16 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\{Model,SoftDeletes};
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Key extends Model
 {
 
-    
+
     protected $table = 'keys';
     protected $guarded = [];
-    use HasFactory;
+    use HasFactory, SoftDeletes;
 
     // public function pickedBy():BelongsToMany{
     //     return $this->belongsToMany(Employee::class,'employees','key_number','picked_by');

@@ -9,7 +9,7 @@
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             let imageUrl = `{{ $imageUrl }}`;
-            
+
             @if(session('success_type') == 'visitor_departure')
                 let title = 'Good Bye!';
                 let text = 'Thank you for visiting us today. We hope to see you again soon!';
@@ -23,7 +23,7 @@
                 let title = 'Device Logged!';
                 let text = 'The device has been logged successfully.';
             @endif
-            
+
             Swal.fire({
                 title: title,
                 text: text,
@@ -41,30 +41,30 @@
     @php
         $hour = now()->hour;
         $greeting = $hour < 12 ? "Good Morning" : ($hour < 18 ? "Good Afternoon" : "Good Evening");
-    @endphp 
+    @endphp
 
-    <div class="flex justify-between items-center p-4 lg:p-8">
+    <div class="flex justify-between items-center p-4 px-8">
         <h1 class="flex items-center gap-2 md:gap-3">
-            <span class="text-xl sm:text-2xl lg:text-4xl font-medium">{{ $greeting }}</span>
-            <span class="text-[#0F51AE] text-sm sm:text-base lg:text-xl rounded-full bg-[#F2F8FF] px-3 py-1 font-semibold">{{ Auth::user()->name }}</span> 
+            <span class="text-xl sm:text-2xl lg:text-3xl font-semibold">{{ $greeting }}</span>
+            <span class="text-[#0F51AE] text-sm sm:text-base lg:text-xl rounded-full bg-[#F2F8FF] px-3 py-1 font-semibold">{{ Auth::user()->name }}</span>
         </h1>
     </div>
 
     @if(\App\Models\Roles::hasPermission(auth()->user()->role_id !== 5, 'visits', 'create'))
     <main class="flex flex-col">
-        <div class="flex flex-col lg:flex-row gap-4 lg:gap-6 xl:gap-10 p-4 lg:p-8">
-            <div class="flex rounded-2xl bg-[#F2F8FF] w-full p-4 sm:p-5 gap-4 sm:gap-6 flex-col justify-between">
-                <h3 class="text-lg sm:text-xl lg:text-2xl text-black/50 flex gap-2 items-center font-semibold">
+        <div class="flex flex-col lg:flex-row gap-4 lg:gap-6 p-4">
+            <div class="flex rounded-2xl bg-[#F2F8FF] w-full p-4 gap-4 flex-col justify-between">
+                <h3 class="text-lg text-black/50 flex gap-2 items-center font-semibold">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current sm:w-5 sm:h-5">
                         <path d="M16 21V19C16 17.9391 15.5786 16.9217 14.8284 16.1716C14.0783 15.4214 13.0609 15 12 15H6C4.93913 15 3.92172 15.4214 3.17157 16.1716C2.42143 16.9217 2 17.9391 2 19V21M22 21V19C21.9993 18.1137 21.7044 17.2528 21.1614 16.5523C20.6184 15.8519 19.8581 15.3516 19 15.13M16 3.13C16.8604 3.3503 17.623 3.8507 18.1676 4.55231C18.7122 5.25392 19.0078 6.11683 19.0078 7.005C19.0078 7.89317 18.7122 8.75608 18.1676 9.45769C17.623 10.1593 16.8604 10.6597 16 10.88M13 7C13 9.20914 11.2091 11 9 11C6.79086 11 5 9.20914 5 7C5 4.79086 6.79086 3 9 3C11.2091 3 13 4.79086 13 7Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
                     <span class="hidden sm:inline">Ongoing Visits</span>
                     <span class="sm:hidden">Visits</span>
                 </h3>
-                <h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold">{{ $visitor ? count($visitor) : 0 }}</h1>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{ $visitor ? count($visitor) : 0 }}</h1>
                 <div class="flex flex-col sm:flex-row justify-between gap-3">
                     @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'visits', 'create'))
-                    <a href="{{ url('check-visitor') }}" class="bg-gradient-to-b px-4 lg:px-8 text-sm md:text-base lg:text-lg rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">Log Visitor</a>
+                    <a href="{{ url('check-visitor') }}" class="bg-gradient-to-b px-4 text-sm md:text-base rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">Log Visitor</a>
                     @endif
                     <a href="{{ url('visits') }}" class="flex items-center justify-center sm:justify-start text-green-700 font-bold text-sm sm:text-base lg:text-xl">
                         All visits
@@ -75,8 +75,8 @@
                 </div>
             </div>
 
-            <div class="flex rounded-2xl bg-[#F2F8FF] w-full p-4 sm:p-5 gap-4 sm:gap-6 flex-col justify-between">
-                <h3 class="text-lg sm:text-xl lg:text-2xl text-black/50 flex gap-2 items-center font-semibold">
+            <div class="flex rounded-2xl bg-[#F2F8FF] w-full p-4  gap-4 flex-col justify-between">
+                <h3 class="text-lg sm:text-xl text-black/50 flex gap-2 items-center font-semibold">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current sm:w-5 sm:h-5">
                         <path d="M2.586 17.414C2.2109 17.789 2.00011 18.2976 2 18.828V21C2 21.2653 2.10536 21.5196 2.29289 21.7071C2.48043 21.8947 2.73478 22 3 22H6C6.26522 22 6.51957 21.8947 6.70711 21.7071C6.89464 21.5196 7 21.2653 7 21V20C7 19.7348 7.10536 19.4805 7.29289 19.2929C7.48043 19.1054 7.73478 19 8 19H9C9.26522 19 9.51957 18.8947 9.70711 18.7071C9.89464 18.5196 10 18.2653 10 18V17C10 16.7348 10.1054 16.4805 10.2929 16.2929C10.4804 16.1054 10.7348 16 11 16H11.172C11.7024 15.9999 12.211 15.7891 12.586 15.414L13.4 14.6C14.7898 15.0842 16.3028 15.0823 17.6915 14.5948C19.0801 14.1072 20.2622 13.1629 21.0444 11.9162C21.8265 10.6695 22.1624 9.19421 21.9971 7.73178C21.8318 6.26934 21.1751 4.90629 20.1344 3.86561C19.0937 2.82493 17.7307 2.16822 16.2683 2.00293C14.8058 1.83763 13.3306 2.17353 12.0839 2.95568C10.8372 3.73782 9.89279 4.91991 9.40525 6.30856C8.91771 7.69721 8.91585 9.2102 9.4 10.6L2.586 17.414Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                         <path d="M16.5 8.00004C16.7761 8.00004 17 7.77618 17 7.50004C17 7.2239 16.7761 7.00004 16.5 7.00004C16.2239 7.00004 16 7.2239 16 7.50004C16 7.77618 16.2239 8.00004 16.5 8.00004Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
@@ -84,10 +84,10 @@
                     <span class="hidden sm:inline">Picked Keys</span>
                     <span class="sm:hidden">Keys</span>
                 </h3>
-                <h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold">{{ $keys ? count($keys) : 0 }}</h1>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{ $keys ? count($keys) : 0 }}</h1>
                 <div class="flex flex-col sm:flex-row justify-between gap-3">
                     @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'visits', 'create'))
-                    <a href="{{ url('pick-key') }}" class="bg-gradient-to-b px-4 lg:px-8 text-sm md:text-base lg:text-lg rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">Log Key</a>
+                    <a href="{{ url('pick-key') }}" class="bg-gradient-to-b px-4 text-sm md:text-base rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">Log Key</a>
                     @endif
                     <a href="{{ url('keys') }}" class="flex items-center justify-center sm:justify-start text-green-700 font-bold text-sm sm:text-base lg:text-xl">
                         Keys
@@ -99,18 +99,18 @@
             </div>
 
             @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'visits', 'create'))
-            <div class="flex rounded-2xl bg-[#F2F8FF] w-full p-4 sm:p-5 gap-4 sm:gap-6 flex-col justify-between">
-                <h3 class="text-lg sm:text-xl lg:text-2xl text-black/50 flex gap-2 items-center font-semibold">
+            <div class="flex rounded-2xl bg-[#F2F8FF] w-full p-4 gap-2 flex-col justify-between">
+                <h3 class="text-lg sm:text-xl text-black/50 flex gap-2 items-center font-semibold">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="stroke-current sm:w-5 sm:h-5">
                         <path d="M18 8V6C18 5.46957 17.7893 4.96086 17.4142 4.58579C17.0391 4.21071 16.5304 4 16 4H4C3.46957 4 2.96086 4.21071 2.58579 4.58579C2.21071 4.96086 2 5.46957 2 6V13C2 13.5304 2.21071 14.0391 2.58579 14.4142C2.96086 14.7893 3.46957 15 4 15H12M10 19V15.04V18.19M7 19H12M18 12H20C21.1046 12 22 12.8954 22 14V20C22 21.1046 21.1046 22 20 22H18C16.8954 22 16 21.1046 16 20V14C16 12.8954 16.8954 12 18 12Z" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
                     </svg>
-                    <span class="hidden sm:inline">Logged Devices</span>
+                    <span class="max-sm:hidden">Logged Devices</span>
                     <span class="sm:hidden">Devices</span>
                 </h3>
-                <h1 class="text-3xl sm:text-4xl lg:text-6xl font-bold">{{ $devices ? count($devices) : 0 }}</h1>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold">{{ $devices ? count($devices) : 0 }}</h1>
                 <div class="flex flex-col sm:flex-row justify-between gap-3">
                     @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'visits', 'create'))
-                    <a href="{{ url('log') }}" class="bg-gradient-to-b px-4 lg:px-8 text-sm sm:text-base lg:text-xl rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">Log Device</a>
+                    <a href="{{ url('log') }}" class="bg-gradient-to-b px-4 text-sm sm:text-base rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">Log Device</a>
                     @endif
                     <a href="{{ url('devices') }}" class="flex items-center justify-center sm:justify-start text-green-700 font-bold text-sm sm:text-base lg:text-xl">
                         Devices
@@ -123,21 +123,21 @@
             @endif
         </div>
 
-        <div id="visitors-table" class="overflow-x-auto p-4 md:p-8">
+        <div id="visitors-table" class="overflow-x-auto p-4">
             @if ($visitor->isEmpty())
-                <table class="w-full text-sm text-left text-gray-500 min-w-[600px]">
-                    <thead class="text-xs text-gray-700 capitalize bg-gray-50">
+                <table class="w-full text-left text-gray-500 min-w-[600px]">
+                    <thead class=" text-gray-700 capitalize bg-gray-100/80 rounded-xl">
                         <tr>
-                            <th scope="col" class="px-3 sm:px-6 text-lg sm:text-xl lg:text-2xl py-3" colspan="5">
-                                <h2 class="font-bold text-xl sm:text-2xl lg:text-3xl">Ongoing Visits</h2>
+                            <th scope="col" class="px-3 py-2" colspan="5">
+                                <h2 class="font-bold text-xl">Ongoing Visits</h2>
                             </th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td colspan="5" class="text-center py-16 sm:py-24 lg:py-32">
-                                <h1 class="text-lg sm:text-xl lg:text-3xl text-gray-600">No visits ongoing</h1>
-                                <p class="text-gray-500 text-sm sm:text-base lg:text-lg mt-2">Log a visitor by clicking the Log Visitor Button</p>
+                            <td colspan="5" class="text-center py-12">
+                                <h1 class="text-lg font-bold lg:text-xl text-gray-600">No visits ongoing</h1>
+                                <p class="text-gray-500 text-base mt-2">Log a visitor by clicking the Log Visitor Button</p>
                             </td>
                         </tr>
                     </tbody>
@@ -146,24 +146,24 @@
                 <table class="w-full text-sm text-left text-gray-500 min-w-[600px]">
                     <thead class="text-xs text-gray-700 uppercase bg-gray-50">
                         <tr>
-                            <th scope="col" class="px-3 sm:px-6 text-lg sm:text-xl lg:text-2xl py-3" colspan="5">
-                                <h2 class="font-bold text-xl sm:text-2xl lg:text-3xl">Ongoing Visits</h2>
+                            <th scope="col" class="px-3 text-lg sm:text-xl lg:text-2xl py-3" colspan="5">
+                                <h2 class="font-bold text-xl">Ongoing Visits</h2>
                             </th>
                         </tr>
                         <tr>
-                            <th scope="col" class="px-3 sm:px-6 text-base sm:text-lg lg:text-xl py-3">Name</th>
-                            <th scope="col" class="px-3 sm:px-6 text-base sm:text-lg lg:text-xl py-3">Visiting</th>
-                            <th scope="col" class="px-3 sm:px-6 text-base sm:text-lg lg:text-xl py-3">Purpose</th>
-                            <th scope="col" class="px-3 sm:px-6 text-base sm:text-lg lg:text-xl py-3">Time In</th>
+                            <th scope="col" class="px-3 text-base sm:text-lg lg:text-xl py-3">Name</th>
+                            <th scope="col" class="px-3 text-base sm:text-lg lg:text-xl py-3">Visiting</th>
+                            <th scope="col" class="px-3 text-base sm:text-lg lg:text-xl py-3">Purpose</th>
+                            <th scope="col" class="px-3 text-base sm:text-lg lg:text-xl py-3">Time In</th>
                             <th class="px-3 sm:px-6 py-6" scope="col"></th>
                         </tr>
                     </thead>
                     <tbody class="text-sm sm:text-base">
                         @foreach ($visitor as $person)
                             <tr class="odd:bg-white even:bg-gray-50 border-b">
-                                <th scope="row" class="px-3 sm:px-6 py-4 text-sm sm:text-base lg:text-xl font-medium text-black whitespace-nowrap">{{ $person->full_name }}</th>
-                                <td class="px-3 sm:px-6 text-black text-sm sm:text-base lg:text-xl py-4">{{ $person->visitee ? $person->visitee->first_name . ' ' . $person->visitee->last_name : 'N/A' }}</td>
-                                <td class="px-3 sm:px-6 py-4">
+                                <th scope="row" class="px-3 py-4 text-sm lg:text-xl font-medium text-black whitespace-nowrap">{{ $person->full_name }}</th>
+                                <td class="px-2 text-black text-sm lg:text-xl py-4">{{ $person->visitee ? $person->visitee->first_name . ' ' . $person->visitee->last_name : 'N/A' }}</td>
+                                <td class="px-2 py-4">
                                     @switch($person['purpose'])
                                         @case('personal')
                                             <span class="text-green-700 bg-green-200 text-xs sm:text-sm lg:text-base py-1 px-2 sm:px-3 rounded-2xl">{{ $person['purpose'] }}</span>
@@ -178,10 +178,10 @@
                                             <span class="text-blue-600 bg-blue-100 text-xs sm:text-sm lg:text-base rounded-2xl py-1 px-2 sm:px-3">{{ $person['purpose'] }}</span>
                                     @endswitch
                                 </td>
-                                <td class="px-3 sm:px-6 text-sm sm:text-base lg:text-xl py-4">{{ $person?->created_at?->format('H:i') }}</td>
-                                <td class="px-3 sm:px-6 py-4">
+                                <td class="px-3 text-sm lg:text-xl py-4">{{ $person?->created_at?->format('H:i') }}</td>
+                                <td class="px-3 py-4">
                                     <div class="flex flex-col sm:flex-row items-center justify-end gap-2">
-                                        <a href="{{ url('visit/' . $person->id) }}" class="font-medium text-blue-600 text-sm sm:text-base lg:text-xl hover:underline">View</a>
+                                        <a href="{{ url('visit/' . $person->id) }}" class="font-medium text-blue-600 text-sm lg:text-xl hover:underline">View</a>
                                         @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'visits', 'create'))
                                             <a href="{{ route('visitor.departure', ['visitor' => $person->id]) }}" class="font-medium text-red-500 px-2 sm:px-3 py-1 text-xs sm:text-sm rounded-lg border border-red-400 whitespace-nowrap">Sign Out</a>
                                         @endif
@@ -210,7 +210,7 @@
                 <h2 class="text-xl sm:text-2xl md:text-3xl font-semibold text-gray-900 mb-2">Sign In</h2>
                 <p class="text-gray-600 text-base sm:text-lg lg:text-xl text-center">Register your arrival</p>
                 <div class="mt-4 sm:mt-6 inline-flex text-base sm:text-lg lg:text-xl items-center text-blue-600 font-medium">
-                    Get Started 
+                    Get Started
                     <svg class="w-4 h-4 sm:w-5 sm:h-5 ml-2 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/>
                     </svg>
@@ -257,11 +257,11 @@
         document.addEventListener('DOMContentLoaded', function() {
             const visitorDropDown = document.getElementById('visitorDropDown');
             const visitorDropUp = document.getElementById('visitorDropUp');
-            
+
             visitorDropDown.addEventListener('click', function() {
                 visitorDropUp.classList.toggle('hidden');
             });
-            
+
             document.addEventListener('click', function(event) {
                 if (!visitorDropDown.contains(event.target) && !visitorDropUp.contains(event.target)) {
                     visitorDropUp.classList.add('hidden');
@@ -271,13 +271,13 @@
 
         document.addEventListener('DOMContentLoaded', function() {
             const signOutLinks = document.querySelectorAll('a[href^="departure?visitor="]');
-            
+
             signOutLinks.forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const row = this.closest('tr');
                     const visitorName = row.querySelector('th').innerText;
-                    
+
                     Swal.fire({
                         title: 'Sign Out Confirmation',
                         text: `Are you sure you want to sign out ${visitorName}?`,

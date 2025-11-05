@@ -1,157 +1,225 @@
 <x-layout>
     <!-- When there is no desire, all things are at peace. - Laozi -->
-    {{-- @foreach ($employees as $employee) --}}
-
 
     <x-slot:heading>
-        Register a new Staff.
+        Register a new Staff
     </x-slot:heading>
 
-    {{-- <aside class=""> --}}
-        <form action="{{url('store-staff')}}" method="POST" class="flex p-5 w-full overflow-hidden">
-            @csrf
+    <form action="{{ url('store-staff') }}" method="POST" class="p-4 flex-col flex gap-10 md:p-6 lg:p-8">
+        @csrf
 
-
-            <aside class="w-1/2">
-                <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                    <div class="mb-12">
-                       <label for="first_name" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                       First Name  <span class="text-red-400 text-lg">*</span>
-                       </label>
-                       <input type="text" placeholder="Jane" id="first_name" name="first_name" required class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-dark-6 outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2" />
-                    </div>
-                    @error('vehicle_number')
-                    <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
+        {{-- <div class=""> --}}
+        {{-- <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-5xl"> --}}
+            <!-- Left Column -->
+            <div class="grid grid-cols-1 md:grid-cols-2 items-center gap-10 w-full">
+                <!-- First Name -->
+                <div>
+                    <label for="first_name" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        First Name <span class="text-red-400 text-lg">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="first_name"
+                        name="first_name"
+                        placeholder="Jane"
+                        required
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed disabled:bg-gray-100"
+                    />
+                    @error('first_name')
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
                     @enderror
-                 </div>
-                <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                    <div class="mb-12">
-                       <label for="other_name" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                       Other Name <span class="text-gray-500">(optional)</span>
-                       </label>
-                       <input type="text" placeholder="Abla" id="other_name" name="other_name" class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-dark-6 outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default" />
-                    </div>
+                </div>
+
+                <!-- Other Name -->
+                <div>
+                    <label for="other_name" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Other Name <span class="text-gray-500">(optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="other_name"
+                        name="other_name"
+                        placeholder="Abla"
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
                     @error('other_name')
-                    <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
                     @enderror
-                 </div>
-                <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                    <div class="mb-12">
-                       <label for="last_name" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                       Last Name  <span class="text-red-400 text-lg">*</span>
-                       </label>
-                       <input type="text" placeholder="Doe" id="last_name" name="last_name" required class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-dark-6 outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default" />
-                    </div>
+                </div>
+
+                <!-- Last Name -->
+                <div>
+                    <label for="last_name" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Last Name <span class="text-red-400 text-lg">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="last_name"
+                        name="last_name"
+                        placeholder="Doe"
+                        required
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
                     @error('last_name')
-                    <div class="text-red-500 italic font-normal text-lg lg:text-xl">{{ $message }}</div>
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
                     @enderror
-                 </div>
-                <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                    <div class="mb-12">
-                       <label for="employee_number" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                       Employee Number   <span class="text-red-400 text-xl">*</span>
-                       </label>
-                       <input type="text" placeholder="GR 1000 25" id="employee_number" required name="employee_number" class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-black outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default" />
-                    </div>
+                </div>
+
+                <!-- Employee Number -->
+                <div>
+                    <label for="employee_number" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Employee Number <span class="text-red-400 text-xl">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="employee_number"
+                        name="employee_number"
+                        placeholder="GR 1000 25"
+                        required
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
                     @error('employee_number')
-                    <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
                     @enderror
-                 </div>
-                <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                    <div class="mb-12">
-                       <label for="email" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                       Email <span class="text-gray-500">(optional)</span>
-                       </label>
-                       <input type="text" placeholder="janedoe@payswitch.com.gh" id="email" name="email" class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 active:border-blue-400 focus:border-blue-400 outline-none transition  disabled:cursor-default" />
-                    </div>
+                </div>
+
+                <!-- Email -->
+                <div>
+                    <label for="email" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Email <span class="text-gray-500">(optional)</span>
+                    </label>
+                    <input
+                        type="email"
+                        id="email"
+                        name="email"
+                        placeholder="janedoe@payswitch.com.gh"
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
                     @error('email')
-                    <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
                     @enderror
-                 </div>
-                <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                    <div class="mb-12">
-                       <label for="phone_number" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                       Phone Number  <span class="text-red-400 text-lg">*</span>
-                       </label>
-                       <input type="text" placeholder="0241234567" id="phone_number" required name="phone_number" class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-dark-6 outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default" />
-                    </div>
-                    @error('vehicle_number')
-                    <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
+                </div>
+
+                <!-- Phone Number -->
+                <div>
+                    <label for="phone_number" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Phone Number <span class="text-red-400 text-lg">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="phone_number"
+                        name="phone_number"
+                        placeholder="0241234567"
+                        required
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
+                    @error('phone_number')
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
                     @enderror
-                 </div>
-
-                 
-
-            </aside>
-
-
-            <aside class="w-1/2">
-                             <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                <div class="mb-12">
-                   <label for="purpose" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                   Department <span class="text-red-400 text-lg">*</span>
-                   </label>
-                <select class="p-4 focus:border-blue-300 rounded-md outline-none text-slate-500 border uppercase border-gray-400 w-1/2" name="department_id" required >
-                      <option value="" selected disabled class="">Choose Department</option>
-                  @foreach ($departments as $deparment)
-                   <option value="{{$deparment->id}}" class="uppercase">{{$deparment->name}}</option>
-                  @endforeach
-                </select>
-             </div>
-             </div>
-
-
-            <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                <div class="mb-12">
-                   <label for="job_title" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                   Job Title  <span class="text-red-400 text-lg">*</span>
-                   </label>
-                   <input type="text" placeholder="Software Engineer" id="job_title" required name="job_title" class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-black outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default" />
                 </div>
-                @error('vehicle_number')
-                <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
-                @enderror
-             </div>
-            <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                <div class="mb-12">
-                   <label for="access_card_number" class="mb-[10px] block lg:text-xl text-lg font-medium text-black">
-                   Access Card Number <span class="text-gray-500">(optional)</span>
-                   </label>
-                   <input type="text" placeholder="EMP9283" id="access_card_number"  name="access_card_number" class="w-full bg-transparent rounded-md border border-slate-400 py-5 px-5 text-dark-6 outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-default" />
+            {{-- </div>
+
+            <!-- Right Column -->
+            <div class="space-y-8"> --}}
+                <!-- Department -->
+                <div>
+                    <label for="department_id" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Department <span class="text-red-400 text-lg">*</span>
+                    </label>
+                    <select
+                        name="department_id"
+                        id="department_id"
+                        required
+                        class="max:w-full px-4 py-2 text-slate-600 border border-gray-400 rounded-md outline-none focus:border-blue-400 uppercase"
+                    >
+                        <option value="" selected disabled>Choose Department</option>
+                        @foreach ($departments as $department)
+                            <option value="{{ $department->id }}" class="uppercase">{{ $department->name }}</option>
+                        @endforeach
+                    </select>
+                    @error('department_id')
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
-                @error('vehicle_number')
-                <div class="text-red-500 italic font-normal text-sm">{{ $message }}</div>
-                @enderror
-             </div>
-             <div class="w-full px-4 md:w-1/2 lg:w-1/2">
-                <h3 class="mb-4 font-semibold lg:text-xl text-lg text-gray-900">Gender  <span class="text-red-400 text-xl">*</span></h3>
-             <div class="flex w-full md:w-1/2 lg:w-1/2">
-                <div class="flex items-center me-4">
-                    <input id="inline-radio" type="radio" value="female" name="gender" required class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 dark:focus:ring-blue-600 dark:ring-offset-gray-800 focus:ring-2 dark:bg-gray-700 dark:border-gray-600">
-                    <label for="inline-radio" class="ms-2 text-lg lg:text-xl font-medium text-gray-900 ">Female</label>
+
+                <!-- Job Title -->
+                <div>
+                    <label for="job_title" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Job Title <span class="text-red-400 text-lg">*</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="job_title"
+                        name="job_title"
+                        placeholder="Software Engineer"
+                        required
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
+                    @error('job_title')
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
-                <div class="flex items-center">
-                    <input id="inline-2-radio" type="radio" value="male" name="gender" class="w-5 h-5 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500">
-                    <label for="inline-2-radio" class="ms-2 text-lg lg:text-xl font-medium text-gray-900">Male</label>
+
+                <!-- Access Card Number -->
+                <div>
+                    <label for="access_card_number" class="block text-lg lg:text-xl font-medium text-black space-y-2">
+                        Access Card Number <span class="text-gray-500">(optional)</span>
+                    </label>
+                    <input
+                        type="text"
+                        id="access_card_number"
+                        name="access_card_number"
+                        placeholder="EMP9283"
+                        class="max:w-full px-4 py-2 text-base bg-transparent border border-slate-400 rounded-md outline-none transition focus:border-blue-400 active:border-blue-400 disabled:cursor-not-allowed"
+                    />
+                    @error('access_card_number')
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
+                    @enderror
                 </div>
-             </div>             
-             <div class="flex items-baseline justify-end">
-                <button type="submit"
-                    class="bg-gradient-to-b px-10 text-xl rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] flex items-center">
-                    Submit
+
+                <!-- Gender -->
+                <div>
+                    <fieldset>
+                        <legend class="block text-lg lg:text-xl font-medium text-black mb-3">
+                            Gender <span class="text-red-400 text-xl">*</span>
+                        </legend>
+                        <div class="flex flex-wrap gap-6">
+                            <label class="flex items-center cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    value="female"
+                                    required
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                                />
+                                <span class="ml-2 text-lg lg:text-xl font-medium text-gray-900">Female</span>
+                            </label>
+                            <label class="flex items-center cursor-pointer">
+                                <input
+                                    type="radio"
+                                    name="gender"
+                                    value="male"
+                                    class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 focus:ring-blue-500 focus:ring-2"
+                                />
+                                <span class="ml-2 text-lg lg:text-xl font-medium text-gray-900">Male</span>
+                            </label>
+                        </div>
+                    </fieldset>
+                    @error('gender')
+                        <p class="mt-1 text-sm italic text-red-500">{{ $message }}</p>
+                    @enderror
+                </div>
+
+                <!-- Submit Button (Aligned to bottom-right on larger screens) -->
+            {{-- </div> --}}
+        </div>
+                <div class="flex justify-center w-full  mx-auto">
+                    <button
+                        type="submit"
+                        class="w-1/4  py-2 text-xl font-medium text-white bg-gradient-to-b from-[#247EFC] to-[#0C66E4] rounded-lg shadow-md hover:shadow-lg transition-shadow"
+                    >
+                        Submit
                     </button>
-            </div>
-             </div>
-
-             
-
-            </aside>
-
-        </form>
-    {{-- </aside> --}}
-
-
-
-
-
+                </div>
+    </form>
 </x-layout>

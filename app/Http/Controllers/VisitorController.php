@@ -26,7 +26,7 @@ class VisitorController extends Controller
         ]);
     }
 
-    
+
     public function create(Request $request){
         $employees = Employee::whereNot('employment_status','inactive')->get();
         $phone_number = $request->query('phone_number');
@@ -37,15 +37,15 @@ class VisitorController extends Controller
 
 
     public function store(){
-        
+
 
         $availableCards = VisitorAccessCard::where('status', 'available')
         ->where('active','enabled')
         ->get();
-        
-        
+
+
         // dd($availableCards);
-        
+
         function getCardId($index, $availableCards){
             Log::debug("Size Of Available Cards: ". sizeof($availableCards));
             Log::debug("index + 1: " . $index+1);
@@ -55,15 +55,16 @@ class VisitorController extends Controller
                 }else{
                     return 0;
                 }
-                
-                
+
+
             }   catch (Exception $exception){
 
                 Log::debug("Exception");
                 return 0;
             }
         }
-        
+
+
         try{
             $validatedData = request()->validate([
                 'full_name' => 'required',
@@ -75,14 +76,14 @@ class VisitorController extends Controller
                 'devices' => 'nullable|array',
                 'companions' => 'nullable|array',
             ]);
-            
+
             $phone = request()->phone_number;
 
 
-            
+
             $formattedPhone = preg_replace('/^0/','233',$phone);
-            
-            
+
+
             // $checkVisitor = Visitor::where('phone_number', request()->phone)->first();
 
             $activeVisit = Visitor::where('phone_number',$formattedPhone)
@@ -128,13 +129,16 @@ class VisitorController extends Controller
 
     $visitee = Employee::where('id', $validatedData['employee'])->first();
 
+
+        Log::debug('');
+
     // dd($visitee);
     if ($visitee->employment_status !== 'active') {
         return redirect()->back()->with([
             'notice' => "{$visitee->first_name} {$visitee->last_name} is currently unavailable. Please contact the front desk for further assistance."
         ]);
     }
-    
+
 
 
     $visitor = Visitor::create([
@@ -150,10 +154,10 @@ class VisitorController extends Controller
         'companions' => $companionJson,
     ]);
 
-    
+
     $lastInsertedId = $visitor->id;
 
-    
+
     Log::debug("Last Visitor ID: ". $lastInsertedId);
 
 
@@ -278,7 +282,7 @@ if ($activeSecurity) {
             ->where('visitor_id', $visitor->id)
             ->get();
 
-    
+
         return view('visitor.show', compact('visitor', 'access_cards'));
     }
 
@@ -299,20 +303,20 @@ if ($activeSecurity) {
             // Log::debug("old visitor");
             // return $this->exitOldVisitor($visitor);
         }
-    
 
 
 
 
-    //exit 
+
+    //exit
 
 
     public function exit(Visitor $visitor){
 
-                
+
                 // $visitor_id = base64_decode(request('masked_id'));
                 $visitor = Visitor::findOrFail(id: $visitor->id);
-                
+
                 Log::debug("got here");
 
 
@@ -320,7 +324,7 @@ if ($activeSecurity) {
                 // request()->validate([
                 //     'rating'=> '',
                 //     'visitor_experience' => '',
-                //     'marketing_consent' => '',  
+                //     'marketing_consent' => '',
                 // ]);
 
 
@@ -341,7 +345,7 @@ if ($activeSecurity) {
                 // }
 
 
-                
+
 
                 $access_cards = DB::table('access_cards')
                     ->where('visitor_id', $visitor->id)
@@ -390,7 +394,7 @@ if ($activeSecurity) {
             }
 
 
-            
+
 
             public function checkVisitor(){
                 return view('visitor.old-visitor');
@@ -405,9 +409,9 @@ if ($activeSecurity) {
                 return view('visitor.old-visitor-sign-in',compact('visitor','employees'));
 
             }
-        
 
-     
+
+
 
 
             //
@@ -416,17 +420,17 @@ if ($activeSecurity) {
                 $request->validate([
                     'phone_number' => 'required'
                 ]);
-            
+
                 Log::debug("Phone Number: ". $request->phone_number);
-                
+
                 $phone = $request->phone_number;
 
 
-            
+
                 $formattedPhone = preg_replace('/^0/','233',$phone);
-                
-                
-                
+
+
+
             $activeVisit = Visitor::where('phone_number',$formattedPhone)
             ->where('status','ongoing')
             ->whereNull('departed_at')
@@ -440,12 +444,12 @@ if ($activeSecurity) {
             }
 
                 $visitor = Visitor::where('phone_number', $request->phone_number)->first();
-                
+
                 if ($visitor) {
                     try {
                         // Credentials from cURL example
                         $credentials = base64_encode(config('otp.username') . ':' . config('otp.password'));
-                        
+
                         $response = Http::withHeaders([
                             'Authorization' => 'Basic ' . $credentials,
                             'Content-Type' => 'application/json'
@@ -453,12 +457,12 @@ if ($activeSecurity) {
                                 'phonenumber' => $request->phone_number
                             ]);
                             Log::debug("Visitor: ". json_encode($visitor));
-            
+
                         Log::debug("Raw Response: ". $response->body());
-            
+
                         $responseData = $response->json();
                         Log::debug("Response Data: ". json_encode($responseData));
-            
+
                         // Adjust the response handling based on the actual response structure
                         if ($response->successful()) {
                             // Modify session storage based on actual response
@@ -466,36 +470,36 @@ if ($activeSecurity) {
                                 'phonenumber' => $request->phone_number,
                                 'otp_key' => $responseData['key'] ?? null // Adjust this based on actual response
                             ]);
-            
+
                             return response()->json([
-                                'success' => true, 
+                                'success' => true,
                                 'message' => 'OTP sent successfully.',
                                 'data' => $responseData // Include full response data
                             ]);
                         }
-            
+
                         return response()->json([
-                            'success' => false, 
+                            'success' => false,
                             'message' => 'Failed to send code.',
                             'error' => $responseData
                         ], 400);
-            
+
                     } catch (Exception $e) {
                         Log::error('OTP sending failed: ' . $e->getMessage());
                         return response()->json([
-                            'success' => false, 
+                            'success' => false,
                             'message' => 'An unexpected error occurred: ' . $e->getMessage()
                         ], 500);
                     }
                 }
-                
+
                 return response()->json([
                     'success' => false,
                     'redirect' => route('create-visit', ['phone_number' => $request->phone_number]),
                     'message' => 'First time visiting? Please sign up.'
                 ]);
             }
-            
+
 
 
 
@@ -503,24 +507,24 @@ if ($activeSecurity) {
             public function verifyOtp(Request $request)
             {
                 $request->validate(['otp' => 'required']);
-            
+
                 $phone_number = session('phonenumber');
                 $otpKey = session('otp_key');
 
 
                 Log::debug("Phone Number: ". $phone_number);
                 Log::debug("OTP Key: ". $otpKey);
-            
+
                 if (!$phone_number || !$otpKey) {
                     return response()->json(['success' => false, 'message' => 'Session expired. Try again.'], 400);
                 }
 
-                
-            
+
+
                 try {
                         $credentials = base64_encode(config('otp.username') . ':' . config('otp.password'));
-                    
-                        
+
+
                         $data_request = [
                             'phonenumber' => $phone_number,
                             'code' => $request->otp,
@@ -535,10 +539,10 @@ if ($activeSecurity) {
                     ])->post(config('otp.base_url').'/pin/verify', $data_request);
 
                     Log::debug("response: " . $response);
-            
+
                     // $responseData = $response->json();
                     // Log::debug('OTP Verify Response: ' . json_encode($responseData));
-                    
+
                     $response_obj = json_decode($response);
                     if ($response_obj->status == 200) {
                         session()->forget(['otp_key', 'phonenumber']);
@@ -550,23 +554,23 @@ if ($activeSecurity) {
                             'data' => $response
                         ]);
                     }
-            
+
                     return response()->json([
-                        'success' => false, 
+                        'success' => false,
                         'message' => 'Invalid OTP. Please try again.',
                         'error' => $response
                     ], 400);
-            
+
                 } catch (Exception $e) {
                     Log::error('OTP verification failed: ' . $e->getMessage());
-                    
+
                     return response()->json([
-                        'success' => false, 
+                        'success' => false,
                         'message' => 'An unexpected error occurred: ' . $e->getMessage()
                     ], 500);
                 }
             }
 
 
-        
+
 }

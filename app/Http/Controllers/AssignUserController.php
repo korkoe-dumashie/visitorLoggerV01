@@ -20,10 +20,10 @@ use function Laravel\Prompts\select;
 
 class AssignUserController extends Controller
 {
-    
+
     //display all users
     public function index(){
-        $users = User::all();
+        $users = User::with('role')->get();
 
         return view('users.index',compact('users'));
     }
@@ -39,14 +39,15 @@ class AssignUserController extends Controller
         //     $query->select('email')->from('users');
         // })->get();
 
-    $userEmails = User::pluck('email')->toArray();
+    // $userEmails = User::pluck('email');
     // dd($userEmails);
 
     // $employees = Employee::get();
-    
-    // Get employees whose emails are not in the users table
-    $employees = Employee::whereNone('email', $userEmails)->get();
 
+    // Get employees whose emails are not in the users table
+    // $employees = Employee::whereNot('email', $userEmails)->get();
+
+    $employees = Employee::where('is_user',false)->get();
     // dd($employees);
         // dd($employees);
         // Log::debug($employees);
@@ -86,7 +87,7 @@ class AssignUserController extends Controller
         $user->update([
             'password'=>Hash::make(request()->password),
         ]);
- 
+
 
         return redirect('/')->with('success','Password updated successfully');
     }
@@ -101,8 +102,8 @@ class AssignUserController extends Controller
             'role_id'=> 'required|exists:roles,id',
         ]);
 
-        
-        Log::debug($request->all());        
+
+        Log::debug($request->all());
         try{
             return DB::transaction(function () use ($request){
                 $employee = Employee::findOrFail($request->employee_id);
@@ -116,8 +117,8 @@ class AssignUserController extends Controller
 
                 $user = User::create([
                     'name' => trim(implode(' ', [
-                        $employee->first_name, 
-                        $employee->other_name ?? '', 
+                        $employee->first_name,
+                        $employee->other_name ?? '',
                         $employee->last_name
                     ])),
                     'email' => $employee->email,
@@ -125,7 +126,7 @@ class AssignUserController extends Controller
                     'password' => Hash::make(Str::random(16)),
                     // 'password_reset_token' => $token,
                 ]);
-                
+
 
 
 
@@ -142,13 +143,13 @@ class AssignUserController extends Controller
 
         $employee->update(['is_user' => true]);
 
-        
+
         Activities::log(
             action: 'Added a new user',
             description: 'Assigned ' . $role->name . ' role to ' . $employee->first_name . ' ' . $employee->last_name
         );
 
-        return redirect()->back()->with('success', 'User created successfully. An invitation email has been sent.');
+        return redirect('/users')->with('success', 'User created successfully. An invitation email has been sent.');
 
 
                 } else{
@@ -157,8 +158,8 @@ class AssignUserController extends Controller
                     $username = Str::lower($employee->first_name . $employee->last_name) . mt_rand(1000, 9999);
                     $user = User::create([
                         'name' => trim(implode(' ', [
-                            $employee->first_name, 
-                            $employee->other_name ?? '', 
+                            $employee->first_name,
+                            $employee->other_name ?? '',
                             $employee->last_name
                         ])),
                         'username' => $username,
@@ -171,12 +172,12 @@ class AssignUserController extends Controller
 
                     $employee->update(['is_user' => true]);
 
-        
+
                     Activities::log(
                         action: 'Added a new user',
                         description: 'Assigned ' . $role->name . ' role to ' . $employee->first_name . ' ' . $employee->last_name
                     );
-            
+
                     return redirect()->back()->with('success', 'Security User created successfully. ');
 
                 }
@@ -252,7 +253,7 @@ class AssignUserController extends Controller
     public function changeRole(User $user)
     {
         $roles = Roles::get();
-    
+
         return view('users.update', compact('roles', 'user'));
     }
     public function modify(Request $request, User $user)
@@ -260,13 +261,13 @@ class AssignUserController extends Controller
     // Log incoming request data
     Log::debug("Request Data:", $request->all());
     Log::debug("User Data:", ['user' => $user]);
-    
+
     // Validate input
     $validated = $request->validate([
         'role' => 'required|exists:roles,id',
     ]);
     Log::debug("Role: " . $validated['role']);
-    
+
     // Convert to same type and strict comparison
     if ((int)$user->role_id === (int)$validated['role']) {
         return response()->json([
@@ -274,10 +275,10 @@ class AssignUserController extends Controller
             'message' => 'No changes made. User already has this role.',
         ]);
     }
-    
+
     // Log validated data
     Log::debug("Validated Data:", $validated);
-    
+
     // Update user role
     $user->update([
         'role_id' => $validated['role'],
@@ -289,15 +290,15 @@ class AssignUserController extends Controller
     Mail::to($user->email)->send(new UpdateRole($user,$roleName));
 
     Log::debug("Mail sent");
-    
+
     // Get the updated role name (after update)
-    
+
     // Log the activity
     Activities::log(
         action: 'Updated user role',
         description: Auth::user()->name . ' updated ' . $user->name . '\'s role to ' . $roleName
     );
-    
+
     // Return a JSON success response
     return response()->json([
         'success' => true,
@@ -329,5 +330,5 @@ class AssignUserController extends Controller
         }
     }
 
-    
+
 }

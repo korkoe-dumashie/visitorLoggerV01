@@ -4,20 +4,18 @@ namespace App\Models;
 
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\{SoftDeletes,Model};
+use Illuminate\Database\Eloquent\Relations\{BelongsToMany,HasMany};
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class Roles extends Model
 {
-    use HasFactory;
+    use HasFactory,SoftDeletes;
 
     protected $table = 'roles';
 
     protected $guarded = [];
-    use HasFactory;
 
 
     public function users(): HasMany{
@@ -29,7 +27,7 @@ class Roles extends Model
         return $this->belongsToMany(Module::class,  'permissions')->withPivot('view','create','modify','delete');
     }
 
-    
+
     public static function hasPermission($role_id, $moduleName, $action): bool{
         $permissionColumn = "can_$action";
 
@@ -47,7 +45,7 @@ class Roles extends Model
         // Log::debug($permissionColumn);
       return ($check->value($permissionColumn) == 1) ?true: false;
 
-        
+
 
     }
 

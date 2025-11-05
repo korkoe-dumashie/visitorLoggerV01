@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('key_name')->unique();
             $table->enum('status', ['active','inactive'])->default('active');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

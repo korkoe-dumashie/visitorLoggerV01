@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string(column: 'access_card_number')->nullable();
             $table->string(column: 'gender');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
