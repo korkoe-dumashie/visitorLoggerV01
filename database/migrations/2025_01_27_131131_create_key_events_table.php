@@ -21,6 +21,8 @@ return new class extends Migration
         $table->timestamp('picked_at');
         $table->timestamp('returned_at')->nullable();
         $table->enum('status', ['picked', 'returned'])->default('picked');
+        $table->string('return_phone_number')->nullable();
+        $table->boolean('otp_skipped')->default(false);
             $table->timestamps();
         });
     }

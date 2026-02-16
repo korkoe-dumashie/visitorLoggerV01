@@ -11,7 +11,7 @@
 
             <form action="{{ url('store-permission') }}" method="POST" class="space-y-8">
                 @csrf
-                
+
                 <!-- Role Selection -->
                 <div class="space-y-2">
                     <label for="role" class="block text-lg font-medium text-gray-700">Select Role</label>
@@ -33,7 +33,7 @@
                 <!-- Permissions Grid -->
                 <div class="space-y-6">
                     <h2 class="text-lg font-medium text-gray-900 border-b pb-3">Permissions</h2>
-                    
+
                     <div class="grid md:grid-cols-3 lg:grid-cols-4 gap-8">
                         <!-- Visits Section -->
                         <div class="bg-gray-50 p-4 rounded-lg space-y-3">

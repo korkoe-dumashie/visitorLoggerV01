@@ -11,8 +11,8 @@ class Module extends Model
     protected $table = 'modules';
     use HasFactory;
 
-    public function user_roles(){
-        return $this->belongsToMany(Roles::class,'permissions')->withPivot( 'view','create', 'modify', 'delete');
+    public function role(){
+        return $this->belongsToMany(Roles::class,'permissions', 'module_id', 'role_id')->withPivot( 'can_view','can_create', 'can_modify', 'can_delete');
     }
-    
+
 }

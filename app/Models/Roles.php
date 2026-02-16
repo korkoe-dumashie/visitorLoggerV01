@@ -18,13 +18,13 @@ class Roles extends Model
     protected $guarded = [];
 
 
-    public function users(): HasMany{
-        return $this->hasMany(User::class);
+    public function user(): HasMany{
+        return $this->hasMany(User::class,'role_id','id');
     }
 
 
     public function modules():  BelongsToMany{
-        return $this->belongsToMany(Module::class,  'permissions')->withPivot('view','create','modify','delete');
+        return $this->belongsToMany(Module::class,  'permissions','role_id', 'module_id')->withPivot('view','create','modify','delete');
     }
 
 

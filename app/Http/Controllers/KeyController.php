@@ -38,7 +38,7 @@ class KeyController extends Controller
         return redirect('/all_keys');
     }
 
-    //show all keys 
+    //show all keys
     public function keys(){
         $keys = Key::get();
         return view('keys.index', compact('keys'));
@@ -49,20 +49,21 @@ class KeyController extends Controller
         try {
             $key = Key::findOrFail($id);
             $key->update(['status' => 'active']);
-            
+
             Activities::log(
                 action: 'Activated a key',
                 description: 'Activated the ' . $key->key_name . ' key'
             );
-            
+
             session()->flash('success', 'Key activated successfully');
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Key activated successfully'
             ], 200);
-            
+
         } catch(\Exception $e) {
+            Log::error('Key activation failed: ' . $e->getMessage());
             return response()->json([
                 'success' => false,
                 'error' => 'Failed to activate key'
@@ -75,19 +76,19 @@ class KeyController extends Controller
         try {
             $key = Key::findOrFail($id);
             $key->update(['status' => 'inactive']);
-            
+
             Activities::log(
                 action: 'Deactivated a key',
                 description: 'Deactivated the ' . $key->key_name . ' key'
             );
-            
+
             session()->flash('success', 'Key deactivated successfully');
-            
+
             return response()->json([
                 'success' => true,
                 'message' => 'Key deactivated successfully'
             ], 200);
-            
+
         } catch(\Exception $e) {
             return response()->json([
                 'success' => false,

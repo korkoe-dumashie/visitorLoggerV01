@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string(column: 'other_name')->nullable();
             $table->string(column: 'last_name');
             $table->string(column: 'email')->nullable();
-            $table->string(column: 'phone_number');
+            $table->string(column: 'phone_number')->nullable();
             $table->foreignIdFor(Department::class, column: 'department_id');
             $table->enum('employment_status', ['active', 'inactive', 'on_leave'])->default('active');
             $table->string(column: 'job_title');

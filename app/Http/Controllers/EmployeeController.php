@@ -260,7 +260,7 @@ public function importEmployees(Request $request)
 
     } catch (\Exception $e) {
         Log::error('Employee import error', ['error' => $e->getMessage()]);
-        return back()->withErrors(['importFile' => 'Import failed: ' . $e->getMessage()]);
+        return back()->withErrors(['importFile' => 'Import failed due to an unexpected error. Please contact support.']);
     }
 }
 
@@ -317,6 +317,11 @@ public function importEmployees(Request $request)
 
         }
 
+
+        public function deactivate($id){
+            $staff = Employee::findOrFail($id);
+
+        }
 
 
 

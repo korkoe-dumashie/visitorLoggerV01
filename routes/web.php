@@ -154,9 +154,11 @@ Route::get('/', function () {
 
                         Route::get('submit-key/{keyEvent}', 'submitKey');
 
-                        Route::post('confirmKey','verifyOtp')->name('confirmKey');
+                        Route::post('verify-key-otp','verifyOtp')->name('confirmKey');
 
                         Route::patch('return-key/{keyEvent}',  'returnKey');
+
+                        Route::post('skip-otp-verification','skipOtpVerification')->name('skipOtpVerification');
 
 
                 })->middleware('module.permission:keys,view');
@@ -192,6 +194,19 @@ Route::get('/', function () {
 
                         Route::post('log-device',  'store');
 
+                        Route::post('request-device-otp/{device}', 'requestDeviceOtp');
+
+                        Route::post('verify-device-otp', 'verifyDeviceOtp');
+
+                        Route::post('skip-device-verification', 'skipDeviceVerification');
+
+
+
+                        Route::post('request-signout-otp/{device}', 'requestSignOutOtp');
+
+                        Route::post('verify-signout-otp', 'verifySignOutOtp');
+                        
+                        Route::post('skip-signout-verification', 'skipSignOutVerification');
 
                 })->middleware('module.permission:settings,view,create,modify,delete');
 
@@ -214,7 +229,7 @@ Route::get('/', function () {
 
                 Route::controller(RolesController::class)->group(function(){
                         Route::get('roles','index')->middleware('module.permission:roles,view');
-                        Route::get('create-role','create')->middleware('module.permission:roles,view,create,modify,delete');
+                        Route::get('create-role','create')->name('roles.create')->middleware('module.permission:roles,view,create,modify,delete');
                         Route::post('store-role','store')->middleware('module.permission:roles,create,modify,delete');
                         Route::delete('/delete-role/{id}','delete')->middleware('module.permission:roles,delete');
                 });
@@ -246,8 +261,8 @@ Route::get('/', function () {
 
 
                 Route::controller(AssignUserController::class)->group(function(){
-                        Route::get('users','index')->middleware('module.permission:user,view');
-                        Route::get('create-user','create')->middleware('module.permission:user,create,modify,delete');
+                        Route::get('users','index')->middleware('module.permission:user,view')->name('users');
+                        Route::get('create-user','create')->name('users.create')->middleware('module.permission:user,create,modify,delete');
 
                         Route::get('update/{user}','changeRole')->middleware('module.permission:user,create,modify,delete');
 
@@ -264,9 +279,11 @@ Route::get('/', function () {
                 //permissions
 
                 Route::controller(PermissionController::class)->group(function(){
-                        Route::get('permissions','index')->middleware('module.permission:roles,view');
+                        Route::get('permissions/{id}','permissions')->middleware('module.permission:roles,view');
                         Route::get('create-permission','create')->middleware('module.permission:roles,view,create,modify,delete');
                         Route::post('store-permission','store')->middleware('module.permission:roles,create,modify,delete');
+                        Route::put('getPermissions/{id}','getPermissions')->middleware('module.permission:roles,modify')->name('update-permission');
+                        Route::get('showPermissions/{id}','permissions')->middleware('module.permission:permissions,delete')->name('showPermissions');
                         Route::delete('/delete-permission/{id}','destroy')->middleware('module.permission:permissions,delete');
                 })->middleware('module.permission:roles,view,create,modify,delete');
                 });

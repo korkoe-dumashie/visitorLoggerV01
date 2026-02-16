@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use App\Mail\AssignUser;
 use App\Mail\UpdateRole;
-use App\Models\{Activities, Employee, Roles, User};
+use App\Models\{Activities, Employee, Module, Roles, User};
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
 use Illuminate\Auth\Events\PasswordReset;
@@ -21,31 +21,64 @@ use function Laravel\Prompts\select;
 class AssignUserController extends Controller
 {
 
-    //display all users
-    public function index(){
+
+
+    public function index(Request $request)
+    {
+
         $users = User::with('role')->get();
+        $activeTab = $request->get('tab', 'users');
 
-        return view('users.index',compact('users'));
+        if ($activeTab === 'users') {
+            $query = User::with('role');
+
+            // Search functionality
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                      ->orWhere('username', 'like', "%{$search}%")
+                      ->orWhere('email', 'like', "%{$search}%")
+                      ->orWhereHas('role', function($roleQuery) use ($search) {
+                          $roleQuery->where('name', 'like', "%{$search}%");
+                      });
+                });
+            }
+
+            // Role filter
+            if ($request->filled('role') && $request->role !== 'all') {
+                $query?->where('role_id', $request->role);
+            }
+
+            $users = $query->paginate(10)->appends($request->all());
+            $roles = Roles::with('user')->get();
+
+            return view('users.index', compact('users', 'roles', 'activeTab'));
+        } else {
+            $query = Roles::with('user');
+
+
+            // Search functionality
+            if ($request->filled('search')) {
+                $search = $request->search;
+                $query->where(function($q) use ($search) {
+                    $q->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%");
+                });
+            }
+            // $roles = $query->paginate(10)->appends($request->all());
+            $roles = Roles::with('user')->get();
+            $modules = Module::with('role')->get();
+            // dd($roles);
+
+            return view('users.index', compact('roles', 'modules', 'activeTab','users'));
+        }
     }
-
 
 
 
     //add a new user
     public function create(){
-
-        // $currentUserEmails = User::pluck('email','id' );
-        // $employees = Employee::whereNotIn('email', function ($query) {
-        //     $query->select('email')->from('users');
-        // })->get();
-
-    // $userEmails = User::pluck('email');
-    // dd($userEmails);
-
-    // $employees = Employee::get();
-
-    // Get employees whose emails are not in the users table
-    // $employees = Employee::whereNot('email', $userEmails)->get();
 
     $employees = Employee::where('is_user',false)->get();
     // dd($employees);
@@ -64,7 +97,7 @@ class AssignUserController extends Controller
 
 
     public function newUserStore(){
-        // dd(request()->all());
+        dd(request()->all());
         $validated = request()->validate([
             'username'=>'required',
             'password'=>[
@@ -96,99 +129,104 @@ class AssignUserController extends Controller
 
     //store the user and send an email to reset password
 
-    public function store(Request $request){
-        $request->validate([
-            'employee_id'=> 'required|exists:employees,id',
-            'role_id'=> 'required|exists:roles,id',
-        ]);
 
 
-        Log::debug($request->all());
-        try{
-            return DB::transaction(function () use ($request){
-                $employee = Employee::findOrFail($request->employee_id);
-                $role = Roles::findOrFail($request->role_id);
-                // $token =Str::random(60);
+public function store(Request $request)
+{
+    $request->validate([
+        'employee_id' => 'required|exists:employees,id',
+        'role_id' => 'required|exists:roles,id',
+    ]);
 
+    try {
+        return DB::transaction(function () use ($request) {
 
+            $employee = Employee::findOrFail($request->employee_id);
+            $role = Roles::findOrFail($request->role_id);
 
-                if($role->name !== 'security'){
+            $fullName = trim(implode(' ', array_filter([
+                $employee->first_name,
+                $employee->other_name,
+                $employee->last_name
+            ])));
 
+            $isSecurity = $role->name === 'security';
 
-                $user = User::create([
-                    'name' => trim(implode(' ', [
-                        $employee->first_name,
-                        $employee->other_name ?? '',
-                        $employee->last_name
-                    ])),
-                    'email' => $employee->email,
-                    'role_id' => $request->input('role_id'),
-                    'password' => Hash::make(Str::random(16)),
-                    // 'password_reset_token' => $token,
+            $userData = [
+                'name' => $fullName,
+                'role_id' => $request->role_id,
+            ];
+
+            // Create user
+            if ($isSecurity) {
+                $user = $this->createSecurityUser($userData, $employee);
+                $message = 'Security User created successfully.';
+                $redirectUrl = url()->previous();
+            } else {
+                $user = $this->createRegularUser($userData, $employee);
+                $message = 'User created successfully. An invitation email has been sent.';
+                $redirectUrl = url('/users');
+            }
+
+            // Update employee
+            $employee->update(['is_user' => true]);
+
+            // Log activity (NOW always runs)
+            Activities::log(
+                action: 'Added a new user',
+                description: "Assigned {$role->name} role to {$employee->first_name} {$employee->last_name}"
+            );
+
+            // Single exit point
+            if ($request->ajax()) {
+                return response()->json([
+                    'success' => true,
+                    'message' => $message,
+                    'redirect' => $redirectUrl
                 ]);
+            }
 
-
-
-
-                $token = Password::createToken($user);
-
-                Log::debug("new token" . $token);
-
-                Log::debug("NEW USER: " . $user);
-                Log::debug("Role Info : " . $role);
-
-                Mail::to($user->email)->send(new AssignUser($user, $token));
-
-                Log::debug('Mail Sent');
-
-        $employee->update(['is_user' => true]);
-
-
-        Activities::log(
-            action: 'Added a new user',
-            description: 'Assigned ' . $role->name . ' role to ' . $employee->first_name . ' ' . $employee->last_name
-        );
-
-        return redirect('/users')->with('success', 'User created successfully. An invitation email has been sent.');
-
-
-                } else{
-
-
-                    $username = Str::lower($employee->first_name . $employee->last_name) . mt_rand(1000, 9999);
-                    $user = User::create([
-                        'name' => trim(implode(' ', [
-                            $employee->first_name,
-                            $employee->other_name ?? '',
-                            $employee->last_name
-                        ])),
-                        'username' => $username,
-                        'role_id' => $request->input('role_id'),
-                        'password' => Hash::make('NewSecurity@1234'),
-                        // 'password_reset_token' => $token,
-                    ]);
-
-                    Log::debug("NEW USER: " . $user);
-
-                    $employee->update(['is_user' => true]);
-
-
-                    Activities::log(
-                        action: 'Added a new user',
-                        description: 'Assigned ' . $role->name . ' role to ' . $employee->first_name . ' ' . $employee->last_name
-                    );
-
-                    return redirect()->back()->with('success', 'Security User created successfully. ');
-
-                }
+            return redirect($redirectUrl)->with('success', $message);
         });
-        }catch (\Exception $e){
 
-            Log::error('User creation failed: ' . $e->getMessage());
-            // return redirect('/')->with('error', 'An error occurred. Please try again later.');
-        }
+    } catch (\Exception $e) {
+        Log::error('User creation failed: ' . $e->getMessage());
+        return redirect()->back()
+            ->with('error', 'An error occurred. Please contact support for assistance.');
     }
+}
 
+private function createSecurityUser(array $userData, Employee $employee): User
+{
+    $username = Str::lower($employee->first_name . $employee->last_name) . mt_rand(1000, 9999);
+
+    return User::create(array_merge($userData, [
+        'username' => $username,
+        'password' => Hash::make('NewSecurity@1234'),
+    ]));
+}
+
+private function createRegularUser(array $userData, Employee $employee): User
+{
+    $user = User::create(array_merge($userData, [
+        'email' => $employee->email,
+        'password' => Hash::make(Str::random(16)),
+    ]));
+
+    Log::debug("User created: ", ['user_id' => $user->id, 'email' => $user->email]);
+
+
+    $token = Password::createToken($user);
+
+    Mail::to($user->email)->send(new AssignUser($user, $token));
+
+    Log::info("User created and invitation sent", [
+        'user_id' => $user->id,
+        'email' => $user->email
+    ]);
+
+    return $user;
+}
 
 
     //display reset password form
@@ -308,7 +346,14 @@ class AssignUserController extends Controller
     public function destroy($id){
         try{
             $user = User::findOrFail($id);
-            $user->delete();
+
+            $employee = Employee::where('email',$user->email)->first();
+            $user->forceDelete();
+
+            if($employee){
+                $employee->update(['is_user'=>false]);
+            }
+
 
 
             Activities::log(

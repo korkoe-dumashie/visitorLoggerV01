@@ -41,12 +41,16 @@
     @php
         $hour = now()->hour;
         $greeting = $hour < 12 ? "Good Morning" : ($hour < 18 ? "Good Afternoon" : "Good Evening");
+        $nameParts = explode(' ', trim(Auth::user()->name));
+    $displayName = count($nameParts) > 1
+        ? $nameParts[0] . ' ' . end($nameParts)
+        : $nameParts[0];
     @endphp
 
     <div class="flex justify-between items-center p-4 px-8">
         <h1 class="flex items-center gap-2 md:gap-3">
             <span class="text-xl sm:text-2xl lg:text-3xl font-semibold">{{ $greeting }}</span>
-            <span class="text-[#0F51AE] text-sm sm:text-base lg:text-xl rounded-full bg-[#F2F8FF] px-3 py-1 font-semibold">{{ Auth::user()->name }}</span>
+            <span class="text-[#0F51AE] text-sm sm:text-base capitalize lg:text-xl rounded-full bg-[#F2F8FF] px-3 py-1 font-semibold">{{ $displayName }}</span>
         </h1>
     </div>
 

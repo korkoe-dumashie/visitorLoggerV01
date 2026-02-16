@@ -50,7 +50,7 @@ class AssignUser extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            from: new Address('korkoedumashie@gmail.com','Visitor Mgt'),
+            from: new Address('ps-hrm@payswitch.com.gh','Visitor Mgt'),
             subject: 'Your User Account Has Been Created'
         );
     }

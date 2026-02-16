@@ -18,13 +18,14 @@ return new class extends Migration
             $table->string(column: 'serial_number');
             $table->foreignIdFor(Employee::class, 'employee_id')->constrained('employees');
             $table->boolean('is_personal');
+            $table->boolean('verified')->default(false);
             $table->string(column: 'action');
             $table->string('status');
             $table->timestamp('logged_at');
             $table->timestamp('signed_out_at')->nullable();
             $table->timestamp('returned_at')->nullable();
             $table->timestamps();
-        }); 
+        });
     }
 
     /**

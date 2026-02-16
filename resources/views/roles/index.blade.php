@@ -1,7 +1,7 @@
 <x-layout>
 
     <x-slot:heading>
-        All Roles   
+        All Roles
     </x-slot:heading>
 
 
@@ -9,23 +9,23 @@
         <section class="max-w-5xl m-auto h-full">
             @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'roles', 'create'))
             <div class="flex justify-end mb-6">
-                <a href="{{ url('create-key') }}" 
-                   class="bg-gradient-to-b from-[#247EFC] to-[#0C66E4] px-6 py-2.5 text-white rounded-lg 
+                <a href="{{ url('create-key') }}"
+                   class="bg-gradient-to-b from-[#247EFC] to-[#0C66E4] px-6 py-2.5 text-white rounded-lg
                           flex items-center gap-2 hover:opacity-90 transition-opacity text-lg font-medium">
                     Create New Role
                 </a>
             </div>
         @endif
-    
+
         <div class="overflow-x-auto rounded-lg border border-gray-200">
             <table class="w-full divide-y divide-gray-200">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th scope="col" 
+                        <th scope="col"
                             class="px-6 py-4 text-left text-lg font-semibold text-gray-900">
                             Role
                         </th>
-                        <th scope="col" 
+                        <th scope="col"
                             class="px-6 py-4 text-left text-lg font-semibold text-gray-900">
                             Description
                         </th>
@@ -36,7 +36,7 @@
                         @endif
                     </tr>
                 </thead>
-    
+
                 <tbody class="divide-y divide-gray-200 bg-white">
                     @foreach ($roles as $role)
                         <tr class="hover:bg-gray-50 transition-colors">
@@ -53,15 +53,15 @@
                             @if(\App\Models\Roles::hasPermission(auth()->user()->role_id, 'roles', 'create'))
                                 <td class="whitespace-nowrap px-6 py-4 text-right">
                                     @if ($role->name!=='admin')
-                                    <button type="button" 
-                                            data-role-id="{{ $role->id }}" 
+                                    <button type="button"
+                                            data-role-id="{{ $role->id }}"
                                             data-role-name="{{ $role->name }}"
-                                            class="delete-btn inline-flex items-center justify-center rounded-md 
-                                                   bg-red-50 px-3 py-2 text-lg font-semibold text-red-600 
+                                            class="delete-btn inline-flex items-center justify-center rounded-md
+                                                   bg-red-50 px-3 py-2 text-lg font-semibold text-red-600
                                                    hover:bg-red-100 transition-colors">
                                         Delete Role
                                     </button>
-                                        
+
                                     @endif
                                 </td>
                             @endif
@@ -69,7 +69,7 @@
                     @endforeach
                 </tbody>
             </table>
-    
+
             @if(count($roles) === 0)
                 <div class="text-center py-12">
                     <p class="text-lg text-gray-500">No roles found</p>
@@ -77,11 +77,11 @@
             @endif
         </div>
         </section>
-      
+
     </main>
-    
+
     <script>
-        
+
         document.addEventListener("DOMContentLoaded", function(){
             document.querySelectorAll(".delete-btn").forEach(button => {
                 button.addEventListener("click", function(){

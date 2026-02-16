@@ -4,7 +4,7 @@
         Check Visitor
     </x-slot:heading>
 
-    <main class="p-10 flex w-full flex-col lg:py-96 py-48 justify-center m-auto items-center">
+    <main class="p-10 flex w-full flex-col py-48 justify-center m-auto items-center">
         <form method="POST"
          {{-- action="{{ url('find-visitor') }}" --}}
          id="find-visitor"
@@ -14,8 +14,8 @@
                 <label for="first_name" class=" block text-base lg:text-xl  font-medium text-black">
                  Phone Number<span class="text-red-400">*</span>
                 </label>
-                <input type="tel" name="phone_number"  pattern="[0-9]{10}" 
-                minlength="10" 
+                <input type="tel" name="phone_number"  pattern="[0-9]{10}"
+                minlength="10"
                 maxlength="10"  required id="phone_number" placeholder="024 000 0000" class="w-full bg-transparent rounded-md text-2xl border border-slate-400 py-5 px-5 text-black outline-none transition focus:border-primary active:border-primary disabled:cursor-default disabled:bg-gray-2 disabled:border-gray-2" />
              </div>
              <button class="bg-gradient-to-b px-10  text-2xl w-fit rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4]" type="submit">Submit</button>
@@ -45,7 +45,7 @@
         .replace(/^0/, '233') // Replace leading 0 with country code 233
         .replace(/[^\d]/g, '') // Remove any non-digit characters
         .slice(0, 12);  // Limit to max 12 characters
-    
+
     console.log(phone_number);
     try {
         let response = await axios.post("{{ route('find-visitor') }}", {
@@ -65,7 +65,7 @@
             async function showOTPDialog() {
                 let countdown = 60;
                 let countdownInterval;
-                
+
                 return Swal.fire({
                     icon: "info",
                     title: "Enter OTP",
@@ -86,7 +86,7 @@
                     allowOutsideClick: false,
                     didOpen: () => {
                         const resendBtn = document.getElementById('resendOtpBtn');
-                        
+
                         countdownInterval = setInterval(() => {
                             countdown--;
                             if (countdown <= 0) {
@@ -98,12 +98,12 @@
                                 resendBtn.textContent = `Resend OTP (${countdown}s)`;
                             }
                         }, 1000);
-                        
+
                         resendBtn.addEventListener('click', async () => {
                             if (!resendBtn.disabled) {
                                 // Clear the interval
                                 clearInterval(countdownInterval);
-                                
+
                                 // Request new OTP
                                 try {
                                     // Show loading spinner during OTP resend
@@ -115,7 +115,7 @@
                                             Swal.showLoading();
                                         }
                                     });
-                                    
+
                                     // Resend OTP request
                                     let resendResponse = await axios.post("{{ route('find-visitor') }}", {
                                         phone_number: phone_number
@@ -124,9 +124,9 @@
                                             "X-CSRF-TOKEN": document.querySelector('input[name="_token"]').value
                                         }
                                     });
-                                    
+
                                     Swal.close();
-                                    
+
                                     if (resendResponse.data.success) {
                                         await Swal.fire({
                                             title: 'OTP Resent',
@@ -134,7 +134,7 @@
                                             icon: 'success',
                                             confirmButtonText: 'OK'
                                         });
-                                        
+
                                         // Restart dialog with new countdown
                                         // Swal.close();
                                         showOTPDialog();
@@ -145,21 +145,21 @@
                                             icon: 'error',
                                             confirmButtonText: 'OK'
                                         });
-                                        
+
                                         // Restart dialog with new countdown
                                         Swal.close();
                                         showOTPDialog();
                                     }
                                 } catch (error) {
                                     console.error("Error:", error);
-                                    
+
                                     await Swal.fire({
                                         title: 'Error',
                                         text: error.response?.data?.message || 'An unexpected error occurred',
                                         icon: 'error',
                                         confirmButtonText: 'OK'
                                     });
-                                    
+
                                     // Restart dialog with new countdown
                                     Swal.close();
                                     showOTPDialog();
@@ -186,7 +186,7 @@
             async function verifyOTP(otp) {
                 // Show loading spinner during OTP verification
                 Swal.showLoading();
-                
+
                 try {
                     let verifyResponse = await axios.post("{{ route('verify-otp') }}", {
                         otp: otp
@@ -197,12 +197,12 @@
                     });
 
                     let result = verifyResponse.data;
-                    
+
                     if (!result.success) {
                         Swal.hideLoading();
                         return { success: false, message: result.message };
                     }
-                    
+
                     return { success: true, message: result.message, redirect: result.redirect };
                 } catch (error) {
                     Swal.hideLoading();
@@ -217,18 +217,18 @@
             let otpVerified = false;
             while (!otpVerified) {
                 const otpDialog = await showOTPDialog();
-                
+
                 // User cancelled
                 if (otpDialog.isDismissed) {
                     break;
                 }
-                
+
                 // Verify the OTP that was entered
                 const verifyResult = await verifyOTP(otpDialog.value);
-                
+
                 if (verifyResult.success) {
                     otpVerified = true;
-                    
+
                     await Swal.fire({
                         icon: "success",
                         title: "OTP Verified",
@@ -236,7 +236,7 @@
                         timer: 2000,
                         showConfirmButton: false
                     });
-                    
+
                     // Show spinner during redirect
                     Swal.fire({
                         title: 'Redirecting...',
@@ -302,6 +302,6 @@
     }
 });
     </script>
-    
+
 
 </x-layout>

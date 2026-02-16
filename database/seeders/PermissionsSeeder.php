@@ -29,7 +29,7 @@ class PermissionsSeeder extends Seeder
         $settings = $modules[2];
         $logs = $modules[3];
         $visits = $modules[4];
-        $user_roles = $modules[5];
+        $role = $modules[5];
         $user = $modules[6];
         $reports = $modules[7];
         $departments = $modules[8];
@@ -95,7 +95,7 @@ class PermissionsSeeder extends Seeder
 
         Permission::create([
             'role_id'=>$admin->id,
-            'module_id'=>$user_roles->id,
+            'module_id'=>$role->id,
             'can_view'=>1,
             'can_create'=>1,
             'can_modify'=>1,
@@ -200,7 +200,7 @@ class PermissionsSeeder extends Seeder
         //6
         Permission::create([
             'role_id'=>$hr->id,
-            'module_id'=>$user_roles->id,
+            'module_id'=>$role->id,
             'can_view'=>0,
             'can_create'=>0,
             'can_modify'=>0,
@@ -303,7 +303,7 @@ class PermissionsSeeder extends Seeder
 
         Permission::create([
             'role_id'=>$security->id,
-            'module_id'=>$user_roles->id,
+            'module_id'=>$role->id,
             'can_view'=>0,
             'can_create'=>0,
             'can_modify'=>0,
@@ -406,7 +406,7 @@ class PermissionsSeeder extends Seeder
         //6
         Permission::create([
             'role_id'=>$support->id,
-            'module_id'=>$user_roles->id,
+            'module_id'=>$role->id,
             'can_view'=>1,
             'can_create'=>0,
             'can_modify'=>0,
@@ -510,7 +510,7 @@ class PermissionsSeeder extends Seeder
         //6
         Permission::create([
             'role_id'=>$visitor->id,
-            'module_id'=>$user_roles->id,
+            'module_id'=>$role->id,
             'can_view'=>0,
             'can_create'=>0,
             'can_modify'=>0,

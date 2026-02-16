@@ -18,7 +18,7 @@ class DepartmentFactory extends Factory
      */
     public function definition(): array
     {
-        static $names = ['tech', 'business', 'hr', 'finance', 'audit'];
+        static $names = ['management','technology', 'business', 'hr', 'finance', 'audit'];
 
         $name = count($names) > 0
             ? array_shift($names)
