@@ -4,6 +4,7 @@
             <thead class="bg-gray-50">
                 <tr>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Username</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Role</th>
                     <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Email</th>
 
@@ -25,7 +26,10 @@
                             </div>
                         </td>
                         <td class="px-6 py-4">
-                            <span class="text-sm uppercase text-gray-600">{{ $user->role->name }}</span>
+                            <span class="text-sm uppercase text-gray-600">{{ $user->username ?? '' }}</span>
+                        </td>
+                        <td class="px-6 py-4">
+                            <span class="text-sm uppercase text-gray-600">{{ $user->role->name ?? 'N/A' }}</span>
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap uppercase text-sm text-gray-900">
                             {{ $user->email }}

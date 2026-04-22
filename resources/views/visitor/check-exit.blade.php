@@ -12,27 +12,27 @@
                     <h2 class="text-2xl font-semibold text-gray-900">Visitor Check-out</h2>
                     <p class="mt-2 text-lg] text-gray-600">Please enter your phone number to sign out</p>
                 </div>
-    
+
                 <!-- Form -->
-                <form 
+                <form
                     method="POST"
                     action="{{ url('confirmExit') }}"
                     id="confirm-exit"
                     class="space-y-6"
                 >
                     @csrf
-                    
+
                     <!-- Phone Number Input -->
                     <div class="space-y-2">
-                        <label 
-                            for="phone_number" 
+                        <label
+                            for="phone_number"
                             class="block text-lg font-medium text-gray-700"
                         >
                             Phone Number <span class="text-red-500">*</span>
                         </label>
                         <div class="relative">
-                            <input 
-                                type="tel" 
+                            <input
+                                type="tel"
                                 name="phone_number"
                                 id="phone_number"
                                 pattern="[0-9]{10}"
@@ -47,10 +47,10 @@
                             />
                         </div>
                     </div>
-    
+
                     <!-- Action Buttons -->
                     <div class="grid grid-cols-2 gap-4 pt-4">
-                        <a 
+                        <a
                             href="{{ url('check-visitor') }}"
                             class="inline-flex justify-center items-center px-4 py-3 rounded-lg
                                    bg-gradient-to-b from-emerald-500 to-emerald-600
@@ -61,7 +61,7 @@
                         >
                             Sign In
                         </a>
-                        <button 
+                        <button
                             type="submit"
                             class="inline-flex justify-center items-center px-4 py-3 rounded-lg
                                    bg-gradient-to-b from-blue-500 to-blue-600
@@ -75,18 +75,18 @@
                     </div>
                 </form>
             </div>
-    
+
             <!-- Help Text -->
             <p class="mt-4 text-center text-base text-gray-600">
                 Need assistance? Contact the front desk
             </p>
         </div>
     </main>
-    
+
 
 
     <script>
-    
+
 
     document.getElementById('confirm-exit').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -108,7 +108,7 @@
         .replace(/^0/, '233') // Replace leading 0 with country code 233
         .replace(/[^\d]/g, '') // Remove any non-digit characters
         .slice(0, 12);  // Limit to max 12 characters
-    
+
     console.log(phone_number);
     try {
         let response = await axios.post("{{ route('confirmExit') }}", {
@@ -126,7 +126,7 @@
         if (data.success) {
             Swal.fire({
                 icon: "info",
-                title: "Siging out!",
+                title: "Signing out!",
                 text: data.message,
                 timer: 2000, // Auto close after 2 seconds
                 showConfirmButton: false
@@ -169,6 +169,6 @@
     }
 });
     </script>
-    
+
 
 </x-layout>

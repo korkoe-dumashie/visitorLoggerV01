@@ -52,6 +52,10 @@
             <span class="text-xl sm:text-2xl lg:text-3xl font-semibold">{{ $greeting }}</span>
             <span class="text-[#0F51AE] text-sm sm:text-base capitalize lg:text-xl rounded-full bg-[#F2F8FF] px-3 py-1 font-semibold">{{ $displayName }}</span>
         </h1>
+
+    @if(\App\Models\Roles::hasPermission(auth()->user()->role_id == 5, 'visits', 'create'))
+        <a href="{{ url('create-visit') }}" class="bg-gradient-to-b px-4 text-sm md:text-base rounded-lg py-2 text-white from-[#247EFC] to-[#0C66E4] text-center">New Visit</a>
+    @endif
     </div>
 
     @if(\App\Models\Roles::hasPermission(auth()->user()->role_id !== 5, 'visits', 'create'))

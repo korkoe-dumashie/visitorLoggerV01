@@ -12,13 +12,14 @@
 
         <div class="px-10">
         <table class="w-full text-left bg-gray-50 display  text-gray-500 px-10" id="visits">
-            <thead class=" text-gray-700 p-10 uppercase bg-gray-50">
+            <thead class=" text-gray-700 p-10 bg-gray-50">
                 <tr class="">
-                    <th scope="col" class="px-4 text-base py-2">Name</th>
+                    <th scope="col" class="px-4 text-base py-2">Visitor</th>
                     <th scope="col" class="px-4 text-base py-2">Visiting</th>
                     <th scope="col" class="px-4 text-base py-2">Purpose</th>
                     <th scope="col" class="px-4 text-base py-2">Arrived</th>
                     <th scope="col" class="px-4 text-base py-2">Departed</th>
+                    <th scope="col" class="px-4 text-base py-2">Status</th>
                     <th scope="col" class="px-4 text-base py-2">Actions</th>
                     {{-- <th scope="col" class="px-6 text-lg py-3"></th> --}}
                 </tr>
@@ -27,28 +28,35 @@
                 @foreach ($visitor as $person)
                     <tr class="odd:bg-white even:bg-gray-50 p-10 text-base border-b">
                         <td class="px-6 py-4 font-medium whitespace-nowrap">{{ $person?->full_name }}</td>
-                        <td class="px-6 lg:text-xl py-4">{{ $person->visitee ? $person->visitee->first_name . ' ' . $person->visitee->last_name : 'N/A' }}</td>
+                        <td class="px-6 lg:text-lg py-4">{{ $person->visitee ? $person->visitee->first_name . ' ' . $person->visitee->last_name : 'N/A' }}</td>
                         <td class="px-6 py-4 capitalize">
                             @switch($person['purpose'])
-                                @case('personal')
-                                    <span class="text-green-800 px-2 py-1 rounded-xl bg-green-100">{{ $person->purpose }}</span>
-                                    @break
-                                @case('interview')
-                                    <span class="text-amber-800 px-2 py-1 rounded-xl bg-amber-100">{{ $person->purpose }}</span>
-                                    @break
-                                @case('official')
-                                    <span class="text-red-800 px-2 py-1 rounded-xl bg-red-100">{{ $person->purpose }}</span>
-                                    @break
-                                @default
-                                    <span class="text-blue-800 px-2 py-1 rounded-xl bg-blue-100">{{ $person->purpose }}</span>
+                            @case('personal')
+                            <span class="text-green-800 px-2 py-1 rounded-xl bg-green-100">{{ $person->purpose }}</span>
+                            @break
+                            @case('interview')
+                            <span class="text-amber-800 px-2 py-1 rounded-xl bg-amber-100">{{ $person->purpose }}</span>
+                            @break
+                            @case('official')
+                            <span class="text-red-800 px-2 py-1 rounded-xl bg-red-100">{{ $person->purpose }}</span>
+                            @break
+                            @default
+                            <span class="text-blue-800 px-2 py-1 rounded-xl bg-blue-100">{{ $person->purpose }}</span>
                             @endswitch
                         </td>
-                        <td class="px-6 text-left py-4 text-black">{{ $person?->created_at?->format('M, D Y : H:i') }}</td>
+                        <td class="px-6 text-left py-4 text-black">{{ $person?->created_at?->format('d, M Y : H:i') }}</td>
                         <td class="px-6 py-4 text-left text-black">
                             @if ($person?->departed_at === null)
-                                <span class="text-amber-600 font-medium italic">Still Ongoing...</span>
+                            <span class="text-amber-600 font-medium italic">Still Ongoing...</span>
                             @else
-                                {{ $person?->departed_at?->format('D, M Y : H:i') }}
+                            {{ $person?->departed_at?->format('d, M Y : H:i') }}
+                            @endif
+                        </td>
+                        <td class="px-6 py-4 capitalize">
+                            @if ($person->status === 'ongoing')
+                                <span class="text-amber-800 px-2 py-1 rounded-xl bg-amber-100">{{ $person->status }}</span>
+                            @else
+                                <span class="text-green-800 px-2 py-1 rounded-xl bg-green-100">{{ $person->status }}</span>
                             @endif
                         </td>
                         <td class="px-10 flex gap-14 py-4">
@@ -74,7 +82,7 @@
         </div> --}}
     </div>
 
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+    <script src="https://cdn.datatables.net/2.3.7/js/dataTables.min.js"></script>
     <script>
         $(document).ready(function() {
             $('#visits').DataTable();

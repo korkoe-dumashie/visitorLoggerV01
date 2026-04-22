@@ -21,7 +21,10 @@ class VisitorController extends Controller
 
 
         return view('visitor.visits',[
-            'visitor' => Visitor::orderBy('status')->get(),
+
+        //display all visitors with the most recent ones first
+        //desc
+        'visitor' => Visitor::orderBy('created_at', 'desc')->get()
 
         ]);
     }

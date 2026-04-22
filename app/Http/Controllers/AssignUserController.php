@@ -97,7 +97,7 @@ class AssignUserController extends Controller
 
 
     public function newUserStore(){
-        dd(request()->all());
+        // dd(request()->all());
         $validated = request()->validate([
             'username'=>'required',
             'password'=>[
